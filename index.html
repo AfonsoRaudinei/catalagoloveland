@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Loveland"/>
+<meta name="theme-color" content="#1C1C1E"/>
+<link rel="manifest" href="manifest.json"/>
+<link rel="apple-touch-icon" href="logo.png"/>
+<title>Loveland</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.5/babel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+/* ═══ iOS DESIGN SYSTEM — Loveland ═══ */
+:root{
+  --p400:#34C759;--p500:#22C55E;--p600:#16A34A;--p700:#15803D;
+  --pgrad:linear-gradient(135deg,#22C55E 0%,#16A34A 100%);
+  --pshadow:0 4px 12px rgba(34,197,94,.30);
+  --g50:#FAFAFA;--g100:#F5F5F7;--g200:#E5E5EA;--g300:#D1D1D6;
+  --g400:#C7C7CC;--g500:#AEAEB2;--g600:#8E8E93;--g700:#636366;
+  --g800:#48484A;--g900:#1C1C1E;
+  --sl:#D1FAE5;--sd:#16A34A;
+  --wl:#FEF3C7;--wd:#D97706;
+  --dl:#FEE2E2;--dd:#DC2626;--db:#FF3B30;
+  --il:#DBEAFE;--id:#1E40AF;
+  --rsm:6px;--rmd:10px;--rlg:14px;--rxl:20px;
+  --ssm:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --smd:0 4px 12px rgba(0,0,0,.08),0 2px 4px rgba(0,0,0,.05);
+  --slg:0 12px 32px rgba(0,0,0,.10),0 4px 8px rgba(0,0,0,.06);
+  --sxl:0 24px 48px rgba(0,0,0,.14),0 8px 16px rgba(0,0,0,.08);
+  --eout:cubic-bezier(0,0,.58,1);
+  --espg:cubic-bezier(.34,1.56,.64,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{height:100%;}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Segoe UI','Helvetica Neue',Arial,sans-serif;
+  background:linear-gradient(180deg,#FAFAFA 0%,#F5F5F7 100%);
+  color:var(--g900);min-height:100vh;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  -webkit-font-smoothing:antialiased;
+}
+:focus-visible{outline:2px solid var(--p500);outline-offset:2px;}
+
+/* ── LOGIN ── */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#F0FDF4 0%,#DCFCE7 50%,#F0F9FF 100%);padding:20px;}
+.login-card{background:rgba(255,255,255,.95);backdrop-filter:blur(10px);border:1px solid var(--g200);border-radius:var(--rxl);padding:40px 36px;width:100%;max-width:380px;box-shadow:var(--sxl);animation:fadeUp .4s var(--eout);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.login-logo{text-align:center;margin-bottom:32px;}
+.login-logo img{width:170px;height:auto;display:block;margin:0 auto 8px;}
+.login-sub{font-size:.6875rem;font-weight:500;color:var(--g600);letter-spacing:.5px;text-transform:uppercase;}
+.login-title{font-size:.9375rem;font-weight:600;color:var(--g800);text-align:center;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--g200);}
+.fld{margin-bottom:16px;}
+.flabel{display:block;font-size:.8125rem;font-weight:500;color:var(--g900);margin-bottom:4px;}
+.finput{width:100%;min-height:44px;padding:10px 14px;border:1.5px solid var(--g300);border-radius:var(--rmd);font-size:1rem;font-family:inherit;color:var(--g900);background:var(--g50);transition:border-color .15s,box-shadow .15s,background .15s;outline:none;}
+.finput:focus{border-color:var(--p500);background:white;box-shadow:0 0 0 3px rgba(34,197,94,.15);}
+.btn-primary{display:block;width:100%;min-height:44px;padding:12px 24px;background:var(--pgrad);color:white;border:none;border-radius:var(--rmd);font-size:.875rem;font-weight:600;font-family:inherit;cursor:pointer;box-shadow:var(--pshadow);transition:transform .15s var(--eout),box-shadow .15s;margin-top:4px;}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(34,197,94,.36);}
+.btn-primary:active{transform:translateY(0);}
+.login-err{background:var(--dl);color:var(--dd);border:1px solid #FECACA;border-radius:var(--rmd);padding:10px 14px;font-size:.8125rem;font-weight:500;text-align:center;margin-bottom:16px;}
+
+/* ── HEADER ── */
+.header{position:sticky;top:0;z-index:200;height:52px;background:rgba(28,28,30,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;justify-content:space-between;padding:0 20px;box-shadow:0 1px 0 rgba(255,255,255,.04),var(--ssm);}
+.hlogo img{height:28px;width:auto;filter:brightness(0) invert(1);display:block;}
+.hright{display:flex;align-items:center;gap:12px;}
+.huser{font-size:.75rem;color:rgba(255,255,255,.5);}
+.hdiv{width:1px;height:14px;background:rgba(255,255,255,.12);}
+.hmeta{font-size:.6875rem;color:rgba(255,255,255,.4);font-variant-numeric:tabular-nums;}
+.btn-ghost{background:transparent;border:none;color:rgba(255,255,255,.55);font-size:.75rem;font-family:inherit;padding:5px 10px;border-radius:var(--rsm);cursor:pointer;min-height:32px;transition:color .15s,background .15s;}
+.btn-ghost:hover{color:white;background:rgba(255,255,255,.08);}
+
+/* ── TAB BAR (bottom iOS style) ── */
+.tab-bar{position:sticky;top:52px;z-index:190;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--g200);display:flex;box-shadow:var(--ssm);}
+.tab-btn{flex:1;min-height:44px;padding:0 4px;border:none;background:transparent;color:var(--g500);font-size:.8125rem;font-weight:500;font-family:inherit;cursor:pointer;border-bottom:2px solid transparent;transition:color .2s,border-color .2s;display:flex;align-items:center;justify-content:center;gap:5px;}
+.tab-btn.active{color:var(--p600);border-bottom-color:var(--p600);font-weight:600;}
+.tab-btn svg{width:15px;height:15px;}
+
+/* ── MAIN ── */
+.main{max-width:1360px;margin:0 auto;padding:20px 20px 32px;}
+.tab-page{display:none;}.tab-page.active{display:block;animation:fadeUp .3s var(--eout);}
+
+/* ── FILTER PANEL ── */
+.filter-panel{background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border:1px solid var(--g200);border-radius:var(--rlg);padding:18px 20px;margin-bottom:18px;box-shadow:var(--ssm);}
+.search-wrap{position:relative;margin-bottom:16px;}
+.search-ico{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--g500);pointer-events:none;}
+.search-in{width:100%;min-height:44px;padding:10px 14px 10px 36px;border:1.5px solid var(--g300);border-radius:var(--rmd);font-size:.9375rem;font-family:inherit;color:var(--g900);background:var(--g50);transition:border-color .15s,box-shadow .15s,background .15s;outline:none;}
+.search-in:focus{border-color:var(--p500);background:white;box-shadow:0 0 0 3px rgba(34,197,94,.12);}
+.frow{margin-bottom:14px;}
+.sec-title{font-size:.6875rem;font-weight:500;color:var(--g600);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;display:block;}
+.chips{display:flex;flex-wrap:wrap;gap:6px;}
+.chip{min-height:30px;padding:4px 14px;border:1.5px solid var(--g300);border-radius:100px;background:white;color:var(--g700);font-size:.75rem;font-weight:500;font-family:inherit;cursor:pointer;white-space:nowrap;transition:all .15s var(--eout);display:inline-flex;align-items:center;}
+.chip:hover{border-color:var(--p500);color:var(--p600);background:var(--sl);}
+.chip.on{background:var(--pgrad);border-color:transparent;color:white;font-weight:600;box-shadow:0 2px 8px rgba(34,197,94,.28);}
+.chip.soja.on{background:linear-gradient(135deg,#3B82F6,#1D4ED8);box-shadow:0 2px 8px rgba(59,130,246,.28);}
+.chip.milho.on{background:linear-gradient(135deg,#F59E0B,#D97706);box-shadow:0 2px 8px rgba(245,158,11,.28);}
+.ffoot{display:flex;align-items:center;justify-content:space-between;padding-top:14px;margin-top:4px;border-top:1px solid var(--g200);}
+.btn-sec{min-height:38px;padding:8px 16px;background:var(--g100);color:var(--g700);border:1px solid var(--g300);border-radius:var(--rmd);font-size:.8125rem;font-weight:600;font-family:inherit;cursor:pointer;transition:all .15s;}
+.btn-sec:hover{background:var(--g200);border-color:var(--g400);}
+.btn-add{min-height:38px;padding:8px 20px;background:var(--pgrad);color:white;border:none;border-radius:var(--rmd);font-size:.8125rem;font-weight:600;font-family:inherit;cursor:pointer;box-shadow:var(--pshadow);transition:transform .15s,box-shadow .15s;}
+.btn-add:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(34,197,94,.36);}
+
+/* ── RESULTS BAR ── */
+.rbar{margin-bottom:16px;}
+.rcnt{font-size:.8125rem;color:var(--g600);font-variant-numeric:tabular-nums;}
+.rcnt strong{color:var(--g900);font-weight:600;}
+
+/* ── CARD GRID ── */
+.cgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;}
+
+/* ── PRODUCT CARD ── */
+.pcard{background:white;border:1px solid var(--g200);border-radius:var(--rlg);box-shadow:var(--ssm);overflow:hidden;display:flex;flex-direction:column;transition:transform .25s var(--eout),box-shadow .25s;animation:fadeUp .35s var(--eout) both;}
+.pcard:hover{transform:translateY(-3px);box-shadow:var(--slg);}
+
+/* photo carousel */
+.photo-wrap{position:relative;width:72px;height:72px;flex-shrink:0;border-radius:var(--rmd);border:1px solid var(--g200);overflow:hidden;background:var(--g100);cursor:pointer;}
+.photo-img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .2s;}
+.photo-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;}
+.photo-placeholder svg{width:20px;height:20px;color:var(--g400);}
+.photo-placeholder span{font-size:.5625rem;font-weight:600;color:var(--g400);text-transform:uppercase;letter-spacing:.5px;}
+.photo-hover{position:absolute;inset:0;background:rgba(22,163,74,.55);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .15s;}
+.photo-hover svg{width:18px;height:18px;color:white;}
+.photo-wrap:hover .photo-hover{opacity:1;}
+.photo-dot-row{position:absolute;bottom:4px;left:0;right:0;display:flex;justify-content:center;gap:3px;}
+.photo-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.6);transition:background .15s;}
+.photo-dot.on{background:white;}
+
+.ctop{padding:16px 16px 12px;display:flex;gap:12px;align-items:flex-start;}
+.cinfo{flex:1;min-width:0;}
+.cname{font-size:.9375rem;font-weight:700;color:var(--g900);line-height:1.25;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ctype{font-size:.625rem;font-weight:500;color:var(--g600);text-transform:uppercase;letter-spacing:.5px;}
+.cbtns{display:flex;gap:5px;}
+.btn-ico{width:30px;height:30px;border:1.5px solid var(--g300);border-radius:var(--rsm);background:white;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.btn-ico svg{width:13px;height:13px;color:var(--g600);}
+.btn-ico:hover{border-color:var(--p400);background:var(--sl);}
+.btn-ico:hover svg{color:var(--p600);}
+.btn-ico.d:hover{border-color:var(--db);background:var(--dl);}
+.btn-ico.d:hover svg{color:var(--dd);}
+
+.cbody{padding:0 16px 14px;flex:1;}
+.cdesc{font-size:.8125rem;color:var(--g600);line-height:1.55;margin-bottom:10px;}
+.nrow{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px;}
+.npill{padding:2px 8px;border-radius:4px;font-size:.625rem;font-weight:700;letter-spacing:.3px;text-transform:uppercase;}
+.spill{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border-radius:4px;font-size:.625rem;font-weight:500;color:var(--g600);background:var(--g100);border:1px solid var(--g200);margin-bottom:8px;}
+.spill strong{font-weight:700;font-size:.5625rem;text-transform:uppercase;letter-spacing:.5px;margin-right:2px;color:var(--g700);}
+.crow{display:flex;gap:5px;flex-wrap:wrap;}
+.cbadge{padding:3px 8px;border-radius:4px;font-size:.625rem;font-weight:600;text-transform:uppercase;letter-spacing:.3px;}
+.cb-s{background:#DBEAFE;color:#1D4ED8;border:1px solid #BFDBFE;}
+.cb-m{background:#FEF3C7;color:#B45309;border:1px solid #FDE68A;}
+.cb-o{background:var(--g100);color:var(--g600);border:1px solid var(--g200);font-style:italic;font-weight:500;}
+
+.cfoot{border-top:1px solid var(--g200);padding:9px 16px;background:var(--g50);display:flex;align-items:center;justify-content:space-between;}
+.dprev{font-size:.75rem;color:var(--g600);}
+.dprev strong{color:var(--g900);font-weight:600;font-variant-numeric:tabular-nums;}
+.btn-exp{background:none;border:none;padding:3px 6px;border-radius:var(--rsm);font-size:.75rem;font-weight:600;color:var(--p600);font-family:inherit;cursor:pointer;transition:background .15s;}
+.btn-exp:hover{background:var(--sl);}
+.dtbl-wrap{padding:0 16px 14px;border-top:1px solid var(--g200);}
+.dtbl{width:100%;border-collapse:collapse;font-size:.75rem;margin-top:10px;}
+.dtbl th{text-align:left;font-size:.5625rem;font-weight:500;color:var(--g600);text-transform:uppercase;letter-spacing:.5px;padding:4px 6px;border-bottom:1px solid var(--g200);}
+.dtbl td{padding:5px 6px;color:var(--g800);border-bottom:1px solid var(--g100);font-variant-numeric:tabular-nums;}
+.dtbl tr:last-child td{border-bottom:none;}
+.onote{font-size:.625rem;color:var(--g500);font-style:italic;margin-top:6px;}
+
+/* empty */
+.empty{text-align:center;padding:72px 24px;}
+.empty h3{font-size:.9375rem;color:var(--g800);font-weight:600;margin-bottom:6px;}
+.empty p{font-size:.8125rem;color:var(--g500);}
+
+/* ── OVERLAY / MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;animation:fadeIn .15s;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal{background:white;border-radius:var(--rxl);width:100%;max-width:580px;max-height:90vh;overflow-y:auto;box-shadow:var(--sxl);animation:slideUp .2s var(--espg);}
+@keyframes slideUp{from{transform:translateY(18px);opacity:0}to{transform:translateY(0);opacity:1}}
+.mhead{padding:20px 24px 16px;border-bottom:1px solid var(--g200);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:white;z-index:1;border-radius:var(--rxl) var(--rxl) 0 0;}
+.mhead h3{font-size:.9375rem;font-weight:700;color:var(--g900);}
+.btn-x{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--g300);background:var(--g100);cursor:pointer;font-size:15px;color:var(--g600);display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.btn-x:hover{background:var(--dl);border-color:var(--db);color:var(--dd);}
+.mbody{padding:20px 24px 24px;}
+.fg{margin-bottom:14px;}
+.fl{display:block;font-size:.8125rem;font-weight:500;color:var(--g900);margin-bottom:4px;}
+.fi,.fsel,.fta{width:100%;min-height:44px;padding:10px 12px;border:1.5px solid var(--g300);border-radius:var(--rmd);font-size:.9375rem;font-family:inherit;color:var(--g900);background:var(--g50);transition:border-color .15s,box-shadow .15s,background .15s;outline:none;}
+.fi:focus,.fsel:focus,.fta:focus{border-color:var(--p500);background:white;box-shadow:0 0 0 3px rgba(34,197,94,.12);}
+.fta{resize:vertical;min-height:72px;}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.sub-title{font-size:.6875rem;font-weight:500;color:var(--g600);text-transform:uppercase;letter-spacing:.5px;margin:18px 0 8px;display:flex;align-items:center;gap:8px;}
+.sub-title::after{content:'';flex:1;height:1px;background:var(--g200);}
+.chips-sel{display:flex;flex-wrap:wrap;gap:5px;}
+.chips-sel .chip{min-height:28px;padding:3px 11px;font-size:.75rem;}
+.img-row{display:flex;gap:12px;align-items:flex-start;}
+.ithumb{width:60px;height:60px;border-radius:var(--rmd);border:1px solid var(--g300);background:var(--g100);overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.ithumb img{width:100%;height:100%;object-fit:cover;}
+.ithumb svg{width:20px;height:20px;color:var(--g400);}
+.iright{display:flex;flex-direction:column;gap:6px;}
+.btn-upl{min-height:34px;padding:5px 14px;border:1.5px dashed var(--p400);border-radius:var(--rmd);background:var(--sl);color:var(--p600);font-size:.75rem;font-weight:500;font-family:inherit;cursor:pointer;transition:all .15s;}
+.btn-upl:hover{background:#BBF7D0;border-color:var(--p600);}
+.ihint{font-size:.625rem;color:var(--g500);}
+.btn-rmv{background:none;border:1px solid var(--g300);color:var(--g500);border-radius:var(--rsm);padding:3px 8px;font-size:.6875rem;font-family:inherit;cursor:pointer;transition:all .15s;}
+.btn-rmv:hover{border-color:var(--db);color:var(--dd);background:var(--dl);}
+.doses-list{display:flex;flex-direction:column;gap:5px;}
+.dose-hdr{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 26px;gap:5px;margin-bottom:2px;}
+.dose-hdr span{font-size:.5625rem;font-weight:500;color:var(--g600);text-transform:uppercase;letter-spacing:.5px;}
+.dose-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 26px;gap:5px;align-items:center;}
+.dose-row .fi{min-height:34px;font-size:.75rem;padding:5px 8px;}
+.btn-drm{width:26px;height:26px;border:none;background:none;color:var(--db);font-size:14px;cursor:pointer;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.btn-drm:hover{background:var(--dl);}
+.btn-dadd{min-height:34px;width:100%;margin-top:5px;border:1.5px dashed var(--g300);background:none;color:var(--g600);font-size:.75rem;font-family:inherit;border-radius:var(--rmd);cursor:pointer;transition:all .15s;}
+.btn-dadd:hover{border-color:var(--p400);color:var(--p600);background:var(--sl);}
+.mfoot{display:flex;gap:8px;justify-content:flex-end;padding-top:14px;margin-top:14px;border-top:1px solid var(--g200);}
+
+/* confirm */
+.conf-modal{max-width:340px;}
+.conf-body{padding:28px 24px;text-align:center;}
+.conf-body h3{font-size:.9375rem;font-weight:700;color:var(--g900);margin-bottom:6px;}
+.conf-body p{font-size:.8125rem;color:var(--g600);line-height:1.55;margin-bottom:20px;}
+.conf-act{display:flex;gap:8px;justify-content:center;}
+.btn-dng{min-height:40px;padding:8px 22px;background:linear-gradient(135deg,#FF3B30 0%,#DC2626 100%);color:white;border:none;border-radius:var(--rmd);font-size:.8125rem;font-weight:600;font-family:inherit;cursor:pointer;box-shadow:0 4px 12px rgba(255,59,48,.28);transition:transform .15s,box-shadow .15s;}
+.btn-dng:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(255,59,48,.38);}
+
+/* ── PLANO NUTRICIONAL ── */
+.plan-section{max-width:900px;margin:0 auto;}
+.pn-card{background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border:1px solid var(--g200);border-radius:var(--rlg);padding:18px 20px;margin-bottom:14px;box-shadow:var(--ssm);}
+.pn-card .sec-title{margin-bottom:12px;}
+.pn-fg{margin-bottom:14px;}
+.pn-fg label{display:block;font-size:.8125rem;font-weight:500;color:var(--g900);margin-bottom:4px;}
+.pn-in{width:100%;min-height:44px;padding:10px 12px;border:1.5px solid var(--g300);border-radius:var(--rmd);font-size:.9375rem;font-family:inherit;color:var(--g900);background:var(--g50);outline:none;transition:border-color .15s,box-shadow .15s,background .15s;}
+.pn-in:focus{border-color:var(--p500);background:white;box-shadow:0 0 0 3px rgba(34,197,94,.12);}
+.pn-sel{width:100%;min-height:44px;padding:10px 12px;border:1.5px solid var(--g300);border-radius:var(--rmd);font-size:.875rem;font-family:inherit;color:var(--g900);background:var(--g50);outline:none;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%238E8E93' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;transition:border-color .15s;}
+.pn-sel:focus{border-color:var(--p500);background-color:white;}
+.pn-in-sm{width:80px;text-align:center;padding:8px;font-variant-numeric:tabular-nums;}
+.pn-tbl{width:100%;border-collapse:collapse;font-size:.8125rem;}
+.pn-tbl th{text-align:left;padding:10px 8px;color:var(--g600);font-weight:600;font-size:.6875rem;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--g200);}
+.pn-tbl td{padding:10px 8px;border-bottom:1px solid var(--g50);vertical-align:middle;}
+.pn-empty{text-align:center;padding:32px 16px;color:var(--g500);font-size:.8125rem;}
+.pn-badge-macro{display:inline-block;padding:2px 7px;font-size:.5625rem;border-radius:4px;font-weight:700;background:var(--il);color:var(--id);border:1px solid #BFDBFE;margin-left:5px;text-transform:uppercase;letter-spacing:.3px;}
+.pn-chip{background:var(--g100);padding:2px 7px;border-radius:4px;font-size:.6875rem;color:var(--g900);display:inline-block;margin:2px 2px 0 0;}
+.pn-rmv{width:24px;height:24px;border:none;background:transparent;color:var(--db);font-size:16px;cursor:pointer;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;transition:background .15s;}
+.pn-rmv:hover{background:var(--dl);}
+.pn-chk{width:18px;height:18px;cursor:pointer;accent-color:var(--p500);}
+.result-ok td{background:#F0FDF4;}
+.result-warn td{background:#FFFBEB;}
+.result-bad td{background:#FEF2F2;}
+.result-neutral td{background:var(--g50);}
+.status-dot{display:inline-block;width:9px;height:9px;border-radius:50%;}
+.dot-ok{background:var(--p500);}
+.dot-warn{background:var(--wd);}
+.dot-bad{background:var(--db);}
+.dot-neutral{background:var(--g400);}
+.pn-fab{position:fixed;bottom:28px;right:24px;width:52px;height:52px;border-radius:26px;background:linear-gradient(135deg,#007AFF,#0051D5);color:white;border:none;font-size:20px;cursor:pointer;box-shadow:0 4px 14px rgba(0,122,255,.4);transition:all .2s;display:flex;align-items:center;justify-content:center;z-index:100;}
+.pn-fab:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,122,255,.5);}
+
+/* ── ADMIN PRODUTOS ── */
+.admin-section{max-width:900px;margin:0 auto;}
+.adm-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.adm-hdr-title{font-size:.6875rem;font-weight:500;color:var(--g600);text-transform:uppercase;letter-spacing:.5px;}
+.adm-tbl{width:100%;border-collapse:collapse;font-size:.8125rem;}
+.adm-tbl th{text-align:left;padding:10px 8px;color:var(--g600);font-weight:600;font-size:.625rem;text-transform:uppercase;letter-spacing:.5px;border-bottom:1.5px solid var(--g200);}
+.adm-tbl td{padding:10px 8px;border-bottom:1px solid var(--g100);vertical-align:middle;}
+.btn-edit{padding:5px 12px;border:none;border-radius:var(--rsm);background:var(--il);color:var(--id);font-size:.75rem;font-weight:500;cursor:pointer;transition:all .15s;}
+.btn-edit:hover{background:#BAE6FD;}
+.btn-del2{padding:5px 12px;border:none;border-radius:var(--rsm);background:var(--dl);color:var(--dd);font-size:.75rem;font-weight:500;cursor:pointer;transition:all .15s;}
+.btn-del2:hover{background:#FECACA;}
+.act-row{display:flex;gap:5px;justify-content:flex-end;}
+
+/* nutrient form grid */
+.nfgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(90px,1fr));gap:10px;margin-top:8px;}
+.nfitem{display:flex;flex-direction:column;gap:3px;}
+.nfitem label{font-size:.6875rem;color:var(--g600);font-weight:500;}
+.nf-in{width:100%;padding:7px 8px;border:1.5px solid var(--g300);border-radius:var(--rsm);font-size:.8125rem;font-family:inherit;text-align:center;font-variant-numeric:tabular-nums;outline:none;transition:border-color .15s;}
+.nf-in:focus{border-color:var(--p500);}
+.chk-grp{display:flex;align-items:center;gap:8px;margin-top:8px;}
+.chk-grp input{width:18px;height:18px;cursor:pointer;accent-color:var(--p500);}
+.chk-grp label{font-size:.875rem;cursor:pointer;}
+
+/* composição nutricional no modal */
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin-top:8px;}
+.comp-item{display:flex;flex-direction:column;gap:3px;}
+.comp-item label{font-size:.625rem;font-weight:600;letter-spacing:.3px;text-transform:uppercase;padding:2px 6px;border-radius:3px;text-align:center;}
+.comp-in{width:100%;padding:6px 8px;border:1.5px solid var(--g300);border-radius:var(--rsm);font-size:.875rem;font-family:inherit;text-align:center;font-variant-numeric:tabular-nums;outline:none;background:var(--g50);transition:border-color .15s,box-shadow .15s;}
+.comp-in:focus{border-color:var(--p500);background:white;box-shadow:0 0 0 2px rgba(34,197,94,.12);}
+.comp-unit{font-size:.5625rem;color:var(--g500);text-align:center;margin-top:1px;}
+
+/* calculadora de dose no card */
+.dose-calc{border-top:1px solid var(--g200);padding:10px 16px;background:linear-gradient(180deg,var(--g50) 0%,white 100%);}
+.dose-calc-row{display:flex;align-items:center;gap:8px;}
+.dose-calc-label{font-size:.6875rem;font-weight:500;color:var(--g600);white-space:nowrap;}
+.dose-calc-in{width:72px;min-height:32px;padding:5px 8px;border:1.5px solid var(--g300);border-radius:var(--rsm);font-size:.875rem;font-family:inherit;text-align:center;font-variant-numeric:tabular-nums;outline:none;background:white;transition:border-color .15s,box-shadow .15s;}
+.dose-calc-in:focus{border-color:var(--p500);box-shadow:0 0 0 2px rgba(34,197,94,.12);}
+.dose-calc-unit{font-size:.6875rem;color:var(--g500);}
+.dose-result{margin-top:8px;display:flex;flex-wrap:wrap;gap:5px;}
+.dose-result-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:5px;font-size:.6875rem;font-weight:600;}
+.dose-result-pill span{font-size:.5625rem;font-weight:500;opacity:.75;}
+
+/* ── FOOTER ── */
+.pn-footer{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.98);backdrop-filter:blur(20px);padding:10px 20px calc(10px + env(safe-area-inset-bottom,0px));z-index:80;border-top:1px solid rgba(0,0,0,.06);}
+.pnf-inner{max-width:900px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;}
+.pnf-name{font-size:.8125rem;font-weight:500;color:var(--g900);background:transparent;border:none;font-family:inherit;cursor:text;transition:color .15s;min-width:100px;}
+.pnf-name:focus,.pnf-name:hover{color:var(--p600);outline:none;}
+.pnf-name::placeholder{color:var(--g400);}
+.pnf-sep{width:1px;height:14px;background:var(--g200);}
+.pnf-tag{font-size:.6875rem;color:var(--g500);}
+.pnf-ph{background:transparent;border:none;color:var(--g600);font-family:inherit;font-size:.8125rem;cursor:text;transition:color .15s;width:130px;}
+.pnf-ph:focus,.pnf-ph:hover{color:var(--p600);outline:none;}
+.pnf-ph::placeholder{color:var(--g400);}
+
+@media(max-width:640px){
+  .main{padding:14px 14px 80px;}
+  .cgrid{grid-template-columns:1fr;}
+  .frow2{grid-template-columns:1fr;}
+  .dose-hdr,.dose-row{grid-template-columns:1fr 1fr 1fr auto;}
+  .dose-hdr span:nth-child(4),.dose-row .fi:nth-child(4){display:none;}
+  .pn-fab{bottom:20px;right:16px;}
+  .pnf-inner{flex-direction:column;align-items:flex-start;gap:6px;}
+  .tab-btn{font-size:.6875rem;}
+}
+@media print{
+  .header,.tab-bar,.pn-fab,.pn-footer,.no-print{display:none!important;}
+  body{background:white;}
+}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const {useState,useEffect,useRef,useCallback} = React;
+
+/* ─── CONFIG ─── */
+const LOGO_URL  = "logo.png";
+const SENHA     = "Loveland2025";
+const IMG_BASE  = "img/"; // pasta no GitHub: img/microfull.jpg, img/microfull-2.jpg
+
+/* ─── NUTRIENT COLORS ─── */
+const NP={
+  Mn:{bg:"#D1FAE5",tx:"#065F46",bd:"#A7F3D0"},
+  Zn:{bg:"#DBEAFE",tx:"#1E40AF",bd:"#BFDBFE"},
+  B: {bg:"#FEF3C7",tx:"#92400E",bd:"#FDE68A"},
+  Cu:{bg:"#FCE7F3",tx:"#831843",bd:"#FBCFE8"},
+  Mo:{bg:"#EDE9FE",tx:"#5B21B6",bd:"#DDD6FE"},
+  N: {bg:"#CFFAFE",tx:"#164E63",bd:"#A5F3FC"},
+  K: {bg:"#FEF9C3",tx:"#854D0E",bd:"#FEF08A"},
+  Ca:{bg:"#F9FAFB",tx:"#374151",bd:"#E5E7EB"},
+  P: {bg:"#EEF2FF",tx:"#3730A3",bd:"#C7D2FE"},
+  Co:{bg:"#ECFDF5",tx:"#065F46",bd:"#A7F3D0"},
+  Mg:{bg:"#F0FDFA",tx:"#134E4A",bd:"#99F6E4"},
+};
+
+const NUTS_ALL  = ["B","Ca","Co","Cu","K","Mg","Mn","Mo","N","P","Zn"];
+const TYPES_ALL = ["Adjuvante","Bioestimulante","Inoculante","Nutrição Foliar","Nutrição Solo/Sulco","Tratamento de Sementes"];
+const NUTS_PN   = ["N","P2O5","K2O","CaO","MgO","Zn","Mn","Cu","Fe","B","Mo","Co","Ni"];
+
+/* ─── SLUG para nome de arquivo ─── */
+function toSlug(name){
+  return name.toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'')
+    .trim();
+}
+
+/* ─── STORAGE ─── */
+function load(key,def){try{const v=localStorage.getItem(key);return v?JSON.parse(v):def;}catch{return def;}}
+function persist(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch{}}
+
+/* ─── INITIAL PRODUCTS ─── */
+/* nutComp = g/L conforme fichas técnicas oficiais Nutrien/Loveland */
+const INITIAL=[
+  {id:1,name:"Microfull",type:"Nutrição Foliar",
+   description:"Complexo SC de Zn, Mn, Cu e Mo de elevada concentração. Reestabelece o equilíbrio no sistema solo-planta, especialmente no SPD consolidado. Campo: 300–500 mL/ha.",
+   nutrients:["Mn","Zn","Cu","Mo"],
+   nutComp:{Mn:"164.5",Zn:"264.2",Cu:"117.2",Mo:"56.0"},
+   unidade:"L",source:"Óxido (SC) d=1,75 — Reg. MAPA SP 0031755.000041",
+   cultures:["soja","milho"],
+   doses:[{cultura:"Soja/Feijão",modo:"Foliar",dose:"0,1–0,5 L/ha",estadio:"Fase vegetativa"},{cultura:"Milho/Sorgo",modo:"Foliar",dose:"0,1–0,3 L/ha",estadio:"Fase vegetativa"},{cultura:"Via Sementes",modo:"TS",dose:"0,1–0,2 L/ha",estadio:"Pré-semeadura"}],image:null},
+
+  {id:2,name:"Microzim",type:"Nutrição Foliar",
+   description:"SC de Zn e Mn de alta concentração com extrato de algas. Coordena o potencial produtivo e garante estabelecimento inicial. Campo: 300–500 mL/ha.",
+   nutrients:["Zn","Mn"],
+   nutComp:{Mn:"257.6",Zn:"359.9"},
+   unidade:"L",source:"Carbonato de Mn + Óxido de Zn + Extrato algas (SC) d=1,84 — Reg. MAPA SP 0031755.000019",
+   cultures:["soja","milho"],
+   doses:[{cultura:"Soja/Feijão",modo:"Foliar",dose:"0,2–0,5 L/ha",estadio:"Fase vegetativa"},{cultura:"Milho/Sorgo",modo:"Foliar",dose:"0,1–0,3 L/ha",estadio:"Fase vegetativa"},{cultura:"Via Sementes",modo:"TS",dose:"0,1–0,2 L/ha",estadio:"Pré-semeadura"}],image:null},
+
+  {id:3,name:"Up Bor",type:"Nutrição Foliar",
+   description:"B solúvel em água via Ácido bórico + Hidroxiaminas. Rápida absorção foliar. Favorece pegamento de flores e formação de vagens. Campo: 400–500 mL/ha.",
+   nutrients:["B"],
+   nutComp:{B:"160.26"},
+   unidade:"L",source:"Ácido bórico + Hidroxiaminas d=1,39 — Reg. MAPA SP 0031755.000004",
+   cultures:["soja","milho","outras"],
+   doses:[{cultura:"Soja/Feijão",modo:"Foliar",dose:"0,3–0,5 L/ha",estadio:"Fases vegetativa e reprodutiva"},{cultura:"Milho/Sorgo",modo:"Foliar",dose:"0,3–0,5 L/ha",estadio:"Fase vegetativa"}],image:null},
+
+  {id:4,name:"Power Micros",type:"Tratamento de Sementes",
+   description:"Concentrado de Mo, Co e Ni com extrato de algas Ecklonia Maxima (33,1%). Potencializa FBN e desenvolvimento radicular desde a semente.",
+   nutrients:["Mo","Co"],
+   nutComp:{Mo:"139.37",Co:"12.5"},
+   unidade:"L",source:"Mo+Co+Ni + Ecklonia Maxima 33,1% — Suspensão Homogênea d=1,25",
+   cultures:["soja","milho","outras"],
+   doses:[{cultura:"Soja / Milho / Feijão / Trigo",modo:"Tratamento de sementes",dose:"150–300 mL/100 kg",estadio:"Pré-semeadura"}],image:null},
+
+  {id:5,name:"Nutrisync-D",type:"Nutrição Foliar",
+   description:"P₂O₅, K₂O, B e Mo em solução verdadeira via Polióis para dicotiledôneas. Alta mobilidade foliar. Potencializa desenvolvimento vegetativo e florada. Ação safener. Campo: 400 mL/ha.",
+   nutrients:["P","K","Mo","B"],
+   nutComp:{P:"21.6",K:"10.8",B:"7.5",Mo:"9.7"},
+   unidade:"L",source:"Polióis 5,6% — Solução verdadeira d=1,081",
+   cultures:["soja","outras"],
+   doses:[{cultura:"Soja/Feijão",modo:"Foliar",dose:"0,35–1,0 L/ha (campo: 400 mL)",estadio:"Fase vegetativa e reprodutiva"}],image:null},
+
+  {id:6,name:"Nutrisync-M",type:"Nutrição Foliar",
+   description:"K₂O, B, Mn e Zn em solução verdadeira via Polióis para monocotiledôneas. Ação anti-stress e safener. Campo: 400 mL/ha.",
+   nutrients:["K","Mn","Zn","B"],
+   nutComp:{K:"21.7",B:"0.75",Mn:"3.2",Zn:"7.5"},
+   unidade:"L",source:"Polióis 5,6% — Solução verdadeira d=1,085",
+   cultures:["milho","outras"],
+   doses:[{cultura:"Milho/Sorgo",modo:"Foliar",dose:"0,35–1,0 L/ha (campo: 400 mL)",estadio:"Fase vegetativa"}],image:null},
+
+  {id:7,name:"Liqui-N",type:"Nutrição Foliar",
+   description:"N solúvel em água de alta concentração (332 g/L). Nutrição nitrogenada foliar de alto desempenho para todas as culturas. Campo: 7 L/ha.",
+   nutrients:["N"],
+   nutComp:{N:"332"},
+   unidade:"L",source:"N solúvel em água 27% — Solução verdadeira d=1,23",
+   cultures:["soja","milho","outras"],
+   doses:[{cultura:"Soja/Feijão",modo:"Foliar",dose:"7–10 L/ha",estadio:"Fase reprodutiva"},{cultura:"Milho/Sorgo",modo:"Foliar",dose:"7–10 L/ha",estadio:"Fase reprodutiva"}],image:null},
+
+  {id:8,name:"Lokomotive",type:"Nutrição Foliar",
+   description:"K₂O e N em solução verdadeira via acetato de potássio. Baixo índice salino. Maximiza absorção foliar de K. Campo: 1–2 L/ha.",
+   nutrients:["K","N"],
+   nutComp:{N:"26",K:"327"},
+   unidade:"L",source:"Acetato de potássio + Ureia d=1,31 — Reg. MAPA SP 0031755.000055",
+   cultures:["soja","milho","outras"],
+   doses:[{cultura:"Soja/Feijão",modo:"Foliar",dose:"2,0–3,0 L/ha (campo: 1–2 L)",estadio:"Fase reprodutiva"},{cultura:"Milho/Sorgo",modo:"Foliar",dose:"2,0–3,0 L/ha",estadio:"Fase reprodutiva"}],image:null},
+
+  {id:9,name:"Coach",type:"Bioestimulante",
+   description:"Regulador de crescimento com AIB (auxina) e Cinetina (citocinina). Enraizamento robusto, vigor aéreo e tolerância a estresses. Efeito safener. Incremento médio de 2,8 sc/ha soja / 4,32 sc/ha milho.",
+   nutrients:["Co"],
+   nutComp:{},
+   unidade:"L",source:"Cinetina 1,54 g/L + AIB 8,75 g/L — Concentrado solúvel d=1,22",
+   cultures:["soja","milho","outras"],
+   doses:[
+     {cultura:"Soja",modo:"Foliar",dose:"150–750 mL/ha",estadio:"V2–V5"},
+     {cultura:"Soja",modo:"Sulco de semeadura",dose:"150–750 mL/ha",estadio:"Semeadura"},
+     {cultura:"Milho",modo:"Foliar",dose:"150–750 mL/ha",estadio:"V3–V5"},
+     {cultura:"Algodão",modo:"Foliar",dose:"300–750 mL/ha",estadio:"V4 (repetir 15 dias)*"},
+     {cultura:"Feijão",modo:"Foliar",dose:"300–750 mL/ha",estadio:"Fase vegetativa*"},
+     {cultura:"Café",modo:"Foliar",dose:"150–300 mL/ha",estadio:"Pré-florada / Chumbinho*"}
+   ],image:null},
+
+  {id:10,name:"Super Red",type:"Nutrição Foliar",
+   description:"Cu em micropartículas (SC) de altíssima concentração (491,3 g/L). Máxima cobertura foliar e aderência sem fitotoxidade. Campo: 50–150 mL/ha.",
+   nutrients:["Cu"],
+   nutComp:{Cu:"491.3"},
+   unidade:"L",source:"Cu total 33,2% — Suspensão concentrada d=1,48",
+   cultures:["soja","milho","outras"],
+   doses:[{cultura:"Soja/Feijão",modo:"Foliar",dose:"0,05–0,07 L/ha",estadio:"Fases vegetativa e reprodutiva"},{cultura:"Milho/Sorgo",modo:"Foliar",dose:"0,05 L/ha",estadio:"Fases vegetativa e reprodutiva"}],image:null},
+
+  {id:11,name:"Liberate",type:"Adjuvante",
+   description:"Adjuvante não iônico Leci-Tech. Padroniza gotas, reduz deriva, melhora deposição e penetração. Substitui óleo convencional. +1,1 sc/ha em soja.",
+   nutrients:[],
+   nutComp:{},
+   unidade:"L",source:"Lecitina + Éster metílico de soja + Álcool etoxilado + Antiespumante",
+   cultures:["soja","milho"],
+   doses:[{cultura:"Terrestre",modo:"Pulverização",dose:"50–200 mL/100 L",estadio:"Ao longo do ciclo"},{cultura:"Drone",modo:"Pulverização",dose:"1,0–3,0 mL/L",estadio:"Ao longo do ciclo"}],image:null},
+
+  {id:12,name:"Faster",type:"Adjuvante",
+   description:"Adjuvante Leci-Tech com ação TO-ON-IN: precisão (quebra tensão superficial via Lecitina), recobrimento (anti-evaporante via Óleo Metilado) e penetração (surfactante via Álcool Etoxilado). Para todas as culturas ao longo do ciclo.",
+   nutrients:[],
+   nutComp:{},
+   unidade:"L",source:"Lecitina + Óleo Metilado + Álcool Etoxilado — Leci-Tech",
+   cultures:["soja","milho"],
+   doses:[{cultura:"Todas",modo:"Pulverização",dose:"50–200 mL/ha",estadio:"Ao longo do ciclo"},{cultura:"Todas (calda)",modo:"Pulverização",dose:"50–100 mL/100 L",estadio:"Ao longo do ciclo"}],image:null},
+
+  {id:13,name:"Cal Force",type:"Nutrição Solo/Sulco",
+   description:"Ca e Cu em solução verdadeira para sulco de semeadura. Melhora microambiente radicular, reduz Al³⁺ tóxico. Campo: 400–800 mL/ha.",
+   nutrients:["Ca","Cu"],
+   nutComp:{Ca:"160.26",Cu:"57.6"},
+   unidade:"L",source:"Ca Total 16% + Cu Total 4% — Solução verdadeira d=1,23",
+   cultures:["soja","milho","outras"],
+   doses:[{cultura:"Soja/Feijão",modo:"Foliar/Sulco",dose:"2,0–5,0 L/ha (campo: 800 mL)",estadio:"Fases vegetativa e reprodutiva"},{cultura:"Milho/Sorgo",modo:"Foliar/Sulco",dose:"2,0–5,0 L/ha (campo: 400 mL)",estadio:"Fases vegetativa e reprodutiva"}],image:null},
+
+  {id:14,name:"Super CoMo",type:"Nutrição Foliar",
+   description:"Co e Mo em solução verdadeira de altíssima concentração. Potencializa FBN e nitrogenase. Campo: 150 mL/ha foliar ou 150 mL/100kg TS.",
+   nutrients:["Co","Mo"],
+   nutComp:{Co:"20.8",Mo:"243.2"},
+   unidade:"L",source:"Co + Mo solúveis em água — Solução verdadeira d=1,60",
+   cultures:["soja","milho","outras"],
+   doses:[{cultura:"Soja/Feijão",modo:"Foliar",dose:"0,1–0,2 L/ha (campo: 150 mL)",estadio:"Fase vegetativa"},{cultura:"Via Sementes Soja",modo:"TS",dose:"150 mL/100 kg",estadio:"Pré-semeadura"},{cultura:"Milho/Sorgo",modo:"Foliar",dose:"0,1–0,2 L/ha",estadio:"Fase vegetativa"}],image:null},
+
+  {id:15,name:"Super Root",type:"Bioestimulante",
+   description:"Bioestimulante para tratamento de sementes. Estimula enraizamento e formação de nódulos.",
+   nutrients:["Co"],
+   nutComp:{},
+   unidade:"L",source:"Extrato vegetal + micronutrientes",
+   cultures:["soja","milho"],
+   doses:[{cultura:"Soja / Milho",modo:"Tratamento de sementes",dose:"200–400 mL/100kg",estadio:"TS"}],image:null},
+
+  {id:16,name:"Utilmag",type:"Nutrição Foliar",
+   description:"Mg via acetato de magnésio em solução verdadeira. Potencializa síntese de clorofila e eficiência fotossintética. Campo: 1–3 L/ha.",
+   nutrients:["Mg"],
+   nutComp:{Mg:"73.2"},
+   unidade:"L",source:"Acetato de magnésio 6% — Solução verdadeira d=1,22 — Reg. MAPA SP 0031755.000031",
+   cultures:["soja","milho","outras"],
+   doses:[{cultura:"Soja/Feijão",modo:"Foliar",dose:"1,0–3,0 L/ha",estadio:"Fases vegetativa e reprodutiva"},{cultura:"Milho/Sorgo",modo:"Foliar",dose:"1,0–3,0 L/ha",estadio:"Fases vegetativa e reprodutiva"}],image:null},
+
+  {id:17,name:"LiquiFos",type:"Nutrição Foliar",
+   description:"N e P₂O₅ em solução verdadeira de alta concentração. Aplicação foliar, no sulco ou fertirrigação. Mobiliza e disponibiliza P e N para a cultura. Campo: 1–2 L/ha (Soja/Milho) ou 2–4 L/ha.",
+   nutrients:["N","P"],
+   nutComp:{N:"153.3",P:"511.2"},
+   unidade:"L",source:"N 10,8% + P₂O₅ 36% — Solução verdadeira d=1,42",
+   cultures:["soja","milho","outras"],
+   doses:[{cultura:"Soja/Milho",modo:"Foliar/Sulco",dose:"1–2 L/ha",estadio:"Pré-semeadura e fase reprodutiva"},{cultura:"Demais culturas",modo:"Foliar/Sulco/Fertirrigação",dose:"2–4 L/ha",estadio:"Fases vegetativa e reprodutiva"}],image:null},
+
+  {id:18,name:"Reductus",type:"Adjuvante",
+   description:"Adjuvante surfactante para redução de pH da calda e controle de deriva. Produz padrão de pulverização mais uniforme. Compatível com agroquímicos, biológicos e fertilizantes solúveis. Pode ser usado via aérea e terrestre.",
+   nutrients:[],
+   nutComp:{},
+   unidade:"L",source:"Lauril éter sulfato de sódio + Tensoativos + Sequestrante + Emulsionantes — Reg. 800814",
+   cultures:["soja","milho","outras"],
+   doses:[{cultura:"Todas",modo:"Pulverização",dose:"30–50 mL/100 L",estadio:"Ao longo do ciclo"}],image:null},
+];
+
+/* ─── SVG ICONS ─── */
+const I={
+  Search:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
+  Image:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>,
+  Camera:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+  Edit:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>,
+  Trash:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>,
+  Grid:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>,
+  Chart:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>,
+  Settings:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>,
+  PDF:()=><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>,
+};
+
+/* ══════════════════════════════════════
+   FOTO com carrossel automático
+══════════════════════════════════════ */
+function ProductPhoto({product, onUpload}){
+  const [idx,setIdx]=useState(0);
+  const [urls,setUrls]=useState([]);
+  const [loaded,setLoaded]=useState([]);
+  const ref=useRef();
+
+  useEffect(()=>{
+    const sl=toSlug(product.name);
+    const candidates=[];
+    // foto manual tem prioridade
+    if(product.image) candidates.push({src:product.image,manual:true});
+    // fotos automáticas do GitHub
+    ['jpg','jpeg','png'].forEach(ext=>{
+      candidates.push({src:`${IMG_BASE}${sl}.${ext}`,manual:false});
+      candidates.push({src:`${IMG_BASE}${sl}-2.${ext}`,manual:false});
+    });
+    // também aceita capitalizado (PowerMicros.jpg)
+    candidates.push({src:`${IMG_BASE}${product.name.replace(/\s+/g,'')}.jpg`,manual:false});
+    candidates.push({src:`${IMG_BASE}${product.name.replace(/\s+/g,'')}-2.jpg`,manual:false});
+    setUrls(candidates);
+    setLoaded(new Array(candidates.length).fill(null));
+    setIdx(0);
+  },[product.name,product.image]);
+
+  function handleLoad(i){setLoaded(prev=>{const n=[...prev];n[i]=true;return n;});}
+  function handleError(i){setLoaded(prev=>{const n=[...prev];n[i]=false;return n;});}
+
+  const valid=urls.map((u,i)=>loaded[i]===true?u:null).filter(Boolean);
+
+  function pickImg(e){
+    const f=e.target.files[0];if(!f)return;
+    const r=new FileReader();r.onload=ev=>onUpload(product.id,ev.target.result);r.readAsDataURL(f);
+  }
+
+  const show=valid[idx];
+  const total=valid.length;
+
+  return(
+    <div className="photo-wrap" onClick={()=>{
+      if(total>1){setIdx(i=>(i+1)%total);}
+      else{ref.current&&ref.current.click();}
+    }}>
+      {/* preload hidden imgs */}
+      {urls.map((u,i)=>(
+        <img key={u.src+i} src={u.src} alt="" style={{display:'none'}}
+          onLoad={()=>handleLoad(i)} onError={()=>handleError(i)}/>
+      ))}
+      {show
+        ? <img src={show.src} alt={product.name} className="photo-img"/>
+        : <div className="photo-placeholder"><I.Image/><span>Foto</span></div>
+      }
+      <div className="photo-hover"><I.Camera/></div>
+      {total>1&&(
+        <div className="photo-dot-row">
+          {valid.map((_,i)=><span key={i} className={`photo-dot${i===idx?' on':''}`}/>)}
+        </div>
+      )}
+      <input ref={ref} type="file" accept="image/*" style={{display:'none'}} onChange={pickImg}/>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════
+   LOGIN
+══════════════════════════════════════ */
+function Login({onLogin}){
+  const [name,setName]=useState('');const [pass,setPass]=useState('');const [err,setErr]=useState('');
+  function sub(e){e.preventDefault();if(!name.trim()){setErr('Informe seu nome.');return;}if(pass===SENHA)onLogin(name.trim());else setErr('Senha incorreta.');}
+  return(
+    <div className="login-screen">
+      <div className="login-card">
+        <div className="login-logo"><img src={LOGO_URL} alt="Loveland Products"/><div className="login-sub">Catálogo de Produtos</div></div>
+        <div className="login-title">Acesso restrito à equipe</div>
+        {err&&<div className="login-err">{err}</div>}
+        <form onSubmit={sub}>
+          <div className="fld"><label className="flabel">Seu nome</label><input className="finput" value={name} onChange={e=>setName(e.target.value)} placeholder="Ex: João Silva" autoFocus/></div>
+          <div className="fld"><label className="flabel">Senha</label><input className="finput" type="password" value={pass} onChange={e=>setPass(e.target.value)} placeholder="••••••••"/></div>
+          <button className="btn-primary" type="submit">Entrar</button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════
+   PRODUCT CARD
+══════════════════════════════════════ */
+function PCard({p,onEdit,onDelete,onImg}){
+  const [open,setOpen]=useState(false);
+  const [doseVal,setDoseVal]=useState('');
+
+  // Calcula g/ha para cada nutriente com composição cadastrada
+  const calcResult = React.useMemo(()=>{
+    const dose = parseFloat(doseVal);
+    if(!dose || !p.nutComp || Object.keys(p.nutComp).length===0) return [];
+    return Object.entries(p.nutComp)
+      .filter(([,v])=>v && parseFloat(v)>0)
+      .map(([nut,gPerUnit])=>{
+        const gha = dose * parseFloat(gPerUnit);
+        return {nut, gha};
+      });
+  },[doseVal, p.nutComp]);
+
+  const hasComp = p.nutComp && Object.values(p.nutComp).some(v=>v && parseFloat(v)>0);
+
+  return(
+    <div className="pcard">
+      <div className="ctop">
+        <ProductPhoto product={p} onUpload={onImg}/>
+        <div className="cinfo">
+          <div className="cname">{p.name}</div>
+          <div className="ctype">{p.type}</div>
+        </div>
+        <div className="cbtns">
+          <button className="btn-ico" onClick={()=>onEdit(p)}><I.Edit/></button>
+          <button className="btn-ico d" onClick={()=>onDelete(p)}><I.Trash/></button>
+        </div>
+      </div>
+      <div className="cbody">
+        <div className="cdesc">{p.description}</div>
+        {p.nutrients?.length>0&&(
+          <div className="nrow">
+            {p.nutrients.map(n=>{
+              const c=NP[n]||{bg:'#F5F5F7',tx:'#636366',bd:'#E5E5EA'};
+              const g=p.nutComp?.[n];
+              return(
+                <span key={n} className="npill" style={{background:c.bg,color:c.tx,border:`1px solid ${c.bd}`}}>
+                  {n}{g&&parseFloat(g)>0?<span style={{fontWeight:400,opacity:.75,marginLeft:3}}>{parseFloat(g)}g/{p.unidade||'L'}</span>:null}
+                </span>
+              );
+            })}
+          </div>
+        )}
+        {p.source&&<div className="spill"><strong>Fonte</strong>{p.source}</div>}
+        <div className="crow">
+          {p.cultures?.includes('soja')&&<span className="cbadge cb-s">Soja</span>}
+          {p.cultures?.includes('milho')&&<span className="cbadge cb-m">Milho</span>}
+          {p.cultures?.includes('outras')&&<span className="cbadge cb-o">Outras *</span>}
+        </div>
+      </div>
+
+      {/* ── CALCULADORA DE DOSE ── */}
+      {hasComp&&(
+        <div className="dose-calc">
+          <div className="dose-calc-row">
+            <span className="dose-calc-label">Calcular dose:</span>
+            <input
+              className="dose-calc-in"
+              type="number" min="0" step="0.1"
+              placeholder="0"
+              value={doseVal}
+              onChange={e=>setDoseVal(e.target.value)}
+            />
+            <span className="dose-calc-unit">{p.unidade||'L'}/ha</span>
+          </div>
+          {calcResult.length>0&&doseVal&&(
+            <div className="dose-result">
+              {calcResult.map(({nut,gha})=>{
+                const c=NP[nut]||{bg:'#F5F5F7',tx:'#636366',bd:'#E5E5EA'};
+                return(
+                  <span key={nut} className="dose-result-pill" style={{background:c.bg,color:c.tx,border:`1px solid ${c.bd}`}}>
+                    {nut} {gha%1===0?gha:gha.toFixed(2)} <span>g/ha</span>
+                  </span>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
+
+      {p.doses?.length>0&&(
+        <div className="cfoot">
+          <div className="dprev"><strong>{p.doses[0].dose}</strong> — {p.doses[0].estadio}</div>
+          <button className="btn-exp" onClick={()=>setOpen(!open)}>{open?'Ocultar':'Ver doses'}</button>
+        </div>
+      )}
+      {open&&p.doses?.length>0&&(
+        <div className="dtbl-wrap">
+          <table className="dtbl">
+            <thead><tr><th>Cultura</th><th>Modo</th><th>Dose</th><th>Estádio</th></tr></thead>
+            <tbody>{p.doses.map((d,i)=><tr key={i}><td>{d.cultura}</td><td>{d.modo}</td><td>{d.dose}</td><td>{d.estadio}</td></tr>)}</tbody>
+          </table>
+          {p.cultures?.includes('outras')&&<div className="onote">* Recomendação para outras culturas mediante consulta técnica.</div>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════
+   PRODUCT MODAL (add/edit)
+══════════════════════════════════════ */
+function PModal({product,onSave,onClose}){
+  const isEdit=!!product?.id;const imgRef=useRef();
+  const [f,setF]=useState({name:product?.name||'',type:product?.type||TYPES_ALL[3],description:product?.description||'',nutrients:product?.nutrients||[],nutComp:product?.nutComp||{},source:product?.source||'',unidade:product?.unidade||'L',cultures:product?.cultures||[],doses:product?.doses||[{cultura:'',modo:'Foliar',dose:'',estadio:''}],image:product?.image||null});
+  function tog(k,v){setF(x=>({...x,[k]:x[k].includes(v)?x[k].filter(i=>i!==v):[...x[k],v]}));}
+  function sd(i,k,v){setF(x=>{const d=[...x.doses];d[i]={...d[i],[k]:v};return{...x,doses:d}});}
+  function pickImg(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=ev=>setF(x=>({...x,image:ev.target.result}));r.readAsDataURL(file);}
+  function save(){if(!f.name.trim()){alert('Informe o nome.');return;}onSave({...product,...f,id:product?.id||Date.now()});}
+  return(
+    <div className="overlay" onClick={e=>{if(e.target===e.currentTarget)onClose();}}>
+      <div className="modal">
+        <div className="mhead"><h3>{isEdit?'Editar Produto':'Novo Produto'}</h3><button className="btn-x" onClick={onClose}>×</button></div>
+        <div className="mbody">
+          <div className="sub-title">Imagem</div>
+          <div className="img-row">
+            <div className="ithumb">{f.image?<img src={f.image} alt=""/>:<I.Image/>}</div>
+            <div className="iright">
+              <button className="btn-upl" onClick={()=>imgRef.current.click()}>Carregar imagem</button>
+              <input ref={imgRef} type="file" accept="image/*" style={{display:'none'}} onChange={pickImg}/>
+              {f.image&&<button className="btn-rmv" onClick={()=>setF(x=>({...x,image:null}))}>Remover</button>}
+              <span className="ihint">JPG ou PNG — ou coloque img/{'{slug}'}.jpg no GitHub</span>
+            </div>
+          </div>
+          <div className="frow2" style={{marginTop:14}}>
+            <div className="fg"><label className="fl">Nome *</label><input className="fi" value={f.name} onChange={e=>setF(x=>({...x,name:e.target.value}))} placeholder="Ex: Microfull"/></div>
+            <div className="fg"><label className="fl">Tipo</label><select className="fsel" value={f.type} onChange={e=>setF(x=>({...x,type:e.target.value}))}>{TYPES_ALL.map(t=><option key={t}>{t}</option>)}</select></div>
+          </div>
+          <div className="fg"><label className="fl">Descrição</label><textarea className="fta" value={f.description} onChange={e=>setF(x=>({...x,description:e.target.value}))} placeholder="Mecanismo de ação e benefícios..."/></div>
+          <div className="fg"><label className="fl">Fonte / Tecnologia</label><input className="fi" value={f.source} onChange={e=>setF(x=>({...x,source:e.target.value}))} placeholder="Ex: Boro-MEA, Acetato de potássio..."/></div>
+          <div className="sub-title">Nutrientes</div>
+          <div className="chips-sel">{NUTS_ALL.map(n=>{const c=NP[n]||{};return(<span key={n} className={`chip${f.nutrients.includes(n)?' on':''}`} onClick={()=>tog('nutrients',n)} style={f.nutrients.includes(n)?{background:c.bg,borderColor:c.bd,color:c.tx}:{}}>{n}</span>);})}</div>
+          {f.nutrients.length>0&&(<>
+            <div style={{display:'flex',alignItems:'center',gap:10,marginTop:14,marginBottom:4}}>
+              <span style={{fontSize:'.6875rem',fontWeight:500,color:'var(--g600)',textTransform:'uppercase',letterSpacing:'.5px'}}>Composição</span>
+              <div style={{flex:1,height:1,background:'var(--g200)'}}/>
+              <div style={{display:'flex',alignItems:'center',gap:6}}>
+                <span style={{fontSize:'.6875rem',color:'var(--g600)'}}>por</span>
+                <select className="fsel" style={{minHeight:30,padding:'4px 8px',fontSize:'.75rem',width:'auto'}} value={f.unidade} onChange={e=>setF(x=>({...x,unidade:e.target.value}))}>
+                  <option value="L">L (líquido)</option>
+                  <option value="kg">kg (sólido)</option>
+                </select>
+              </div>
+            </div>
+            <div className="comp-grid">
+              {f.nutrients.map(n=>{const c=NP[n]||{bg:'#F5F5F7',tx:'#636366',bd:'#E5E5EA'};return(
+                <div className="comp-item" key={n}>
+                  <label style={{background:c.bg,color:c.tx,border:`1px solid ${c.bd}`}}>{n}</label>
+                  <input className="comp-in" type="number" min="0" step="0.01" placeholder="0"
+                    value={f.nutComp[n]||''} onChange={e=>setF(x=>({...x,nutComp:{...x.nutComp,[n]:e.target.value}}))}/>
+                  <div className="comp-unit">g/{f.unidade}</div>
+                </div>
+              );})}
+            </div>
+          </>)}
+          <div className="sub-title">Culturas</div>
+          <div className="chips-sel">
+            <span className={`chip soja${f.cultures.includes('soja')?' on':''}`} onClick={()=>tog('cultures','soja')}>Soja</span>
+            <span className={`chip milho${f.cultures.includes('milho')?' on':''}`} onClick={()=>tog('cultures','milho')}>Milho</span>
+            <span className={`chip${f.cultures.includes('outras')?' on':''}`} onClick={()=>tog('cultures','outras')}>Outras</span>
+          </div>
+          <div className="sub-title">Doses e Estádios</div>
+          <div className="doses-list">
+            <div className="dose-hdr">{['Cultura','Modo','Dose','Estádio',''].map((h,i)=><span key={i}>{h}</span>)}</div>
+            {f.doses.map((d,i)=>(
+              <div className="dose-row" key={i}>
+                <input className="fi" value={d.cultura} onChange={e=>sd(i,'cultura',e.target.value)} placeholder="Cultura"/>
+                <input className="fi" value={d.modo} onChange={e=>sd(i,'modo',e.target.value)} placeholder="Foliar"/>
+                <input className="fi" value={d.dose} onChange={e=>sd(i,'dose',e.target.value)} placeholder="L/ha"/>
+                <input className="fi" value={d.estadio} onChange={e=>sd(i,'estadio',e.target.value)} placeholder="V4–R2"/>
+                <button className="btn-drm" onClick={()=>setF(x=>({...x,doses:x.doses.filter((_,j)=>j!==i)}))}>×</button>
+              </div>
+            ))}
+          </div>
+          <button className="btn-dadd" onClick={()=>setF(x=>({...x,doses:[...x.doses,{cultura:'',modo:'Foliar',dose:'',estadio:''}]}))}>+ Adicionar linha</button>
+          <div className="mfoot">
+            <button className="btn-sec" onClick={onClose}>Cancelar</button>
+            <button className="btn-primary" style={{width:'auto',padding:'10px 24px',marginTop:0}} onClick={save}>{isEdit?'Salvar':'Adicionar'}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════
+   CONFIRM DELETE
+══════════════════════════════════════ */
+function Confirm({p,onOk,onCancel}){
+  return(
+    <div className="overlay" onClick={e=>{if(e.target===e.currentTarget)onCancel();}}>
+      <div className="modal conf-modal">
+        <div className="conf-body">
+          <h3>Excluir produto?</h3>
+          <p>Tem certeza que deseja excluir <strong>{p?.name}</strong>?<br/>Esta ação não pode ser desfeita.</p>
+          <div className="conf-act">
+            <button className="btn-sec" onClick={onCancel}>Cancelar</button>
+            <button className="btn-dng" onClick={onOk}>Excluir</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════
+   CATÁLOGO TAB
+══════════════════════════════════════ */
+function TabCatalogo({prods,setProds}){
+  const [search,setSearch]=useState('');
+  const [fNut,setFNut]=useState([]);
+  const [fType,setFType]=useState([]);
+  const [fCult,setFCult]=useState([]);
+  const [modal,setModal]=useState(null);
+  const [del,setDel]=useState(null);
+
+  function togF(a,s,v){s(x=>x.includes(v)?x.filter(i=>i!==v):[...x,v]);}
+  function clear(){setSearch('');setFNut([]);setFType([]);setFCult([]);}
+  const active=fNut.length+fType.length+fCult.length+(search?1:0);
+
+  const filtered=prods.filter(p=>{
+    const q=search.toLowerCase();
+    if(q&&!p.name.toLowerCase().includes(q)&&!p.description?.toLowerCase().includes(q))return false;
+    if(fNut.length&&!fNut.every(n=>p.nutrients?.includes(n)))return false;
+    if(fType.length&&!fType.includes(p.type))return false;
+    if(fCult.length&&!fCult.some(c=>p.cultures?.includes(c)))return false;
+    return true;
+  });
+
+  function handleSave(prod){setProds(prev=>{const i=prev.findIndex(x=>x.id===prod.id);if(i>=0){const n=[...prev];n[i]=prod;return n;}return[...prev,prod];});setModal(null);}
+
+  return(
+    <>
+      <div className="filter-panel">
+        <div className="search-wrap">
+          <span className="search-ico"><I.Search/></span>
+          <input className="search-in" value={search} onChange={e=>setSearch(e.target.value)} placeholder="Buscar produto por nome ou descrição..."/>
+        </div>
+        <div className="frow"><span className="sec-title">Nutriente</span><div className="chips">{NUTS_ALL.map(n=><span key={n} className={`chip${fNut.includes(n)?' on':''}`} onClick={()=>togF(fNut,setFNut,n)}>{n}</span>)}</div></div>
+        <div className="frow"><span className="sec-title">Tipo</span><div className="chips">{TYPES_ALL.map(t=><span key={t} className={`chip${fType.includes(t)?' on':''}`} onClick={()=>togF(fType,setFType,t)}>{t}</span>)}</div></div>
+        <div className="frow"><span className="sec-title">Cultura</span><div className="chips">
+          <span className={`chip soja${fCult.includes('soja')?' on':''}`} onClick={()=>togF(fCult,setFCult,'soja')}>Soja</span>
+          <span className={`chip milho${fCult.includes('milho')?' on':''}`} onClick={()=>togF(fCult,setFCult,'milho')}>Milho</span>
+          <span className={`chip${fCult.includes('outras')?' on':''}`} onClick={()=>togF(fCult,setFCult,'outras')}>Outras</span>
+        </div></div>
+        <div className="ffoot">
+          <button className="btn-sec" onClick={clear}>{active>0?`Limpar (${active})`:'Limpar filtros'}</button>
+          <button className="btn-add" onClick={()=>setModal({p:null})}>Novo Produto</button>
+        </div>
+      </div>
+      <div className="rbar"><span className="rcnt"><strong>{filtered.length}</strong> de {prods.length} produtos{active>0&&` · ${active} filtro${active>1?'s':''} ativo${active>1?'s':''}`}</span></div>
+      {filtered.length===0
+        ?<div className="empty"><h3>Nenhum produto encontrado</h3><p>Ajuste os filtros ou adicione um novo produto.</p></div>
+        :<div className="cgrid">{filtered.map(p=><PCard key={p.id} p={p} onEdit={p=>setModal({p})} onDelete={p=>setDel(p)} onImg={(id,img)=>setProds(prev=>prev.map(x=>x.id===id?{...x,image:img}:x))}/>)}</div>
+      }
+      {modal&&<PModal product={modal.p} onSave={handleSave} onClose={()=>setModal(null)}/>}
+      {del&&<Confirm p={del} onOk={()=>{setProds(prev=>prev.filter(x=>x.id!==del.id));setDel(null);}} onCancel={()=>setDel(null)}/>}
+    </>
+  );
+}
+
+/* ══════════════════════════════════════
+   PLANO NUTRICIONAL TAB
+══════════════════════════════════════ */
+function TabPlano({prods}){
+  const [cliente,setCliente]=useState(()=>load('pn_cli',''));
+  const [cultura,setCultura]=useState(()=>load('pn_cult',''));
+  const [targets,setTargets]=useState([]);
+  const [addedProds,setAddedProds]=useState([]);
+  const [nutSel,setNutSel]=useState('');
+  const [prodSel,setProdSel]=useState('');
+  const consultorInfo=load('pn_consultor',{nome:'',telefone:''});
+  const [cNome,setCNome]=useState(consultorInfo.nome);
+  const [cTel,setCTel]=useState(consultorInfo.telefone);
+
+  useEffect(()=>{persist('pn_cli',cliente);},[cliente]);
+  useEffect(()=>{persist('pn_cult',cultura);},[cultura]);
+
+  function addTarget(nut){
+    if(!nut)return;
+    if(targets.find(t=>t.nut===nut)){setNutSel('');return;}
+    setTargets(t=>[...t,{nut,val:''}]);setNutSel('');
+  }
+  function addProd(nome){
+    if(!nome)return;
+    const p=prods.find(x=>x.name===nome);
+    if(!p){setProdSel('');return;}
+    setAddedProds(a=>[...a,{id:Date.now(),name:p.name,dose:'',active:true,data:p}]);
+    setProdSel('');
+  }
+  function calcular(){
+    const alvos={};targets.forEach(t=>{if(t.val)alvos[t.nut]=parseFloat(t.val)||0;});
+    const entregue={};
+    addedProds.forEach(ap=>{
+      if(!ap.active||!ap.dose)return;
+      const dose=parseFloat(ap.dose)||0;
+      NUTS_PN.forEach(n=>{
+        const v=ap.data[n];if(v&&dose>0){entregue[n]=(entregue[n]||0)+dose*v;}
+      });
+    });
+    return{alvos,entregue};
+  }
+  const {alvos,entregue}=calcular();
+
+  function exportPDF(){
+    const el=document.getElementById('pn-print-area');
+    if(!el)return;
+    const opt={margin:10,filename:'Plano_Nutricional.pdf',image:{type:'jpeg',quality:.98},html2canvas:{scale:3},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}};
+    window.html2pdf().set(opt).from(el).save();
+  }
+
+  function saveConsultor(){persist('pn_consultor',{nome:cNome,telefone:cTel});}
+
+  return(
+    <>
+      <div id="pn-print-area" className="plan-section">
+        <div className="pn-card">
+          <div className="sec-title">Informações do Cliente</div>
+          <div className="pn-fg"><label>Cliente</label><input className="pn-in" value={cliente} onChange={e=>setCliente(e.target.value)} placeholder="Nome do produtor"/></div>
+          <div className="pn-fg"><label>Cultura</label><input className="pn-in" value={cultura} onChange={e=>setCultura(e.target.value)} placeholder="Ex: Soja, Milho"/></div>
+        </div>
+
+        <div className="pn-card no-print">
+          <div className="sec-title">Nutrientes Alvo (g/ha)</div>
+          <select className="pn-sel" value={nutSel} onChange={e=>{setNutSel(e.target.value);addTarget(e.target.value);}}>
+            <option value="">+ Adicionar nutriente</option>
+            {NUTS_PN.map(n=><option key={n} value={n}>{n}</option>)}
+          </select>
+          {targets.length>0?(
+            <table className="pn-tbl" style={{marginTop:12}}>
+              <thead><tr><th>Nutriente</th><th style={{textAlign:'center'}}>Alvo (g/ha)</th><th style={{width:36}}></th></tr></thead>
+              <tbody>{targets.map((t,i)=>(
+                <tr key={t.nut}>
+                  <td style={{fontWeight:600}}>{t.nut}</td>
+                  <td style={{textAlign:'center'}}><input className="pn-in pn-in-sm" type="number" min="0" step="0.1" value={t.val} onChange={e=>setTargets(prev=>prev.map((x,j)=>j===i?{...x,val:e.target.value}:x))}/></td>
+                  <td><button className="pn-rmv" onClick={()=>setTargets(prev=>prev.filter((_,j)=>j!==i))}>×</button></td>
+                </tr>
+              ))}</tbody>
+            </table>
+          ):<div className="pn-empty">Nenhum nutriente adicionado</div>}
+        </div>
+
+        <div className="pn-card no-print">
+          <div className="sec-title">Produtos</div>
+          <select className="pn-sel" value={prodSel} onChange={e=>{setProdSel(e.target.value);addProd(e.target.value);}}>
+            <option value="">+ Adicionar produto</option>
+            {prods.map(p=><option key={p.id} value={p.name}>{p.name}</option>)}
+          </select>
+          {addedProds.length>0?(
+            <table className="pn-tbl" style={{marginTop:12}}>
+              <thead><tr><th style={{width:40,textAlign:'center'}}>Usar</th><th>Produto</th><th style={{textAlign:'center',width:110}}>Dose</th><th style={{width:36}}></th></tr></thead>
+              <tbody>{addedProds.map((ap,i)=>(
+                <tr key={ap.id}>
+                  <td style={{textAlign:'center'}}><input type="checkbox" className="pn-chk" checked={ap.active} onChange={e=>setAddedProds(prev=>prev.map((x,j)=>j===i?{...x,active:e.target.checked}:x))}/></td>
+                  <td>
+                    <span style={{fontWeight:600}}>{ap.name}</span>
+                    {ap.data.type==='macro-fisiologico'&&<span className="pn-badge-macro">Macro</span>}
+                    <div style={{marginTop:4,display:'flex',flexWrap:'wrap',gap:3}}>
+                      {NUTS_PN.map(n=>ap.data[n]?<span key={n} className="pn-chip">{n}: {ap.data[n]}</span>:null)}
+                    </div>
+                  </td>
+                  <td style={{textAlign:'center'}}>
+                    <input className="pn-in pn-in-sm" type="number" min="0" step="0.1" value={ap.dose} onChange={e=>setAddedProds(prev=>prev.map((x,j)=>j===i?{...x,dose:e.target.value}:x))}/>
+                    <div style={{fontSize:'.625rem',color:'var(--g600)',marginTop:3}}>{ap.data.unidade||'L/ha'}</div>
+                  </td>
+                  <td><button className="pn-rmv" onClick={()=>setAddedProds(prev=>prev.filter((_,j)=>j!==i))}>×</button></td>
+                </tr>
+              ))}</tbody>
+            </table>
+          ):<div className="pn-empty">Nenhum produto adicionado</div>}
+        </div>
+
+        <div className="pn-card">
+          <div className="sec-title">Resultado do Plano</div>
+          {Object.keys(alvos).length===0
+            ?<div className="pn-empty">Adicione nutrientes e produtos para ver o resultado</div>
+            :<table className="pn-tbl">
+              <thead><tr><th>Nutriente</th><th style={{textAlign:'right'}}>Alvo</th><th style={{textAlign:'right'}}>Entregue</th><th style={{textAlign:'right'}}>Excesso</th><th style={{textAlign:'center',width:50}}>Status</th></tr></thead>
+              <tbody>{Object.keys(alvos).map(nut=>{
+                const alvo=alvos[nut];const entr=entregue[nut]||0;
+                const pct=alvo>0?entr/alvo:0;
+                const exc=entr-alvo;
+                let cls='result-neutral',dot='dot-neutral';
+                if(alvo>0){if(pct>=1){cls='result-ok';dot='dot-ok';}else if(pct>=.8){cls='result-warn';dot='dot-warn';}else{cls='result-bad';dot='dot-bad';}}
+                return(
+                  <tr key={nut} className={cls}>
+                    <td style={{fontWeight:600}}>{nut}</td>
+                    <td style={{textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{alvo.toFixed(1)} g/ha</td>
+                    <td style={{textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{entr.toFixed(1)} g/ha</td>
+                    <td style={{textAlign:'right',fontWeight:600,color:exc>=0?'var(--sd)':'var(--dd)',fontVariantNumeric:'tabular-nums'}}>{exc>=0?'+':''}{exc.toFixed(1)} g/ha</td>
+                    <td style={{textAlign:'center'}}><span className={`status-dot ${dot}`}/></td>
+                  </tr>
+                );
+              })}</tbody>
+            </table>
+          }
+        </div>
+      </div>
+
+      <button className="pn-fab no-print" onClick={exportPDF} title="Exportar PDF"><I.PDF/></button>
+
+      <footer className="pn-footer no-print">
+        <div className="pnf-inner">
+          <div style={{display:'flex',alignItems:'center',gap:12}}>
+            <input type="text" className="pnf-name" value={cNome} onChange={e=>setCNome(e.target.value)} onBlur={saveConsultor} placeholder="Seu nome"/>
+            <div className="pnf-sep"/>
+            <span className="pnf-tag">Consultor Técnico</span>
+          </div>
+          <input type="text" className="pnf-ph" value={cTel} onChange={e=>setCTel(e.target.value)} onBlur={saveConsultor} placeholder="(00) 00000-0000"/>
+        </div>
+      </footer>
+    </>
+  );
+}
+
+/* ══════════════════════════════════════
+   ADMIN PRODUTOS TAB
+══════════════════════════════════════ */
+function TabAdmin({prods,setProds}){
+  const [modal,setModal]=useState(null);
+  const [del,setDel]=useState(null);
+  function handleSave(prod){setProds(prev=>{const i=prev.findIndex(x=>x.id===prod.id);if(i>=0){const n=[...prev];n[i]=prod;return n;}return[...prev,prod];});setModal(null);}
+  return(
+    <>
+      <div className="admin-section">
+        <div className="pn-card">
+          <div className="adm-hdr">
+            <span className="adm-hdr-title">Produtos Cadastrados — {prods.length} total</span>
+            <button className="btn-add" onClick={()=>setModal({p:null})}>Novo Produto</button>
+          </div>
+          {prods.length===0
+            ?<div className="pn-empty">Nenhum produto cadastrado</div>
+            :<table className="adm-tbl">
+              <thead><tr><th>Produto</th><th>Composição</th><th style={{textAlign:'right',width:130}}>Ações</th></tr></thead>
+              <tbody>{prods.map(p=>(
+                <tr key={p.id}>
+                  <td>
+                    <div style={{fontWeight:600,marginBottom:2}}>{p.name}</div>
+                    <div style={{fontSize:'.6875rem',color:'var(--g600)'}}>{p.type}</div>
+                  </td>
+                  <td>
+                    <div style={{display:'flex',flexWrap:'wrap',gap:3}}>
+                      {p.nutrients?.map(n=>{const c=NP[n]||{bg:'#F5F5F7',tx:'#636366',bd:'#E5E5EA'};return<span key={n} className="npill" style={{background:c.bg,color:c.tx,border:`1px solid ${c.bd}`,fontSize:'.5625rem',padding:'1px 6px'}}>{n}</span>;})}
+                    </div>
+                    {p.source&&<div style={{fontSize:'.6875rem',color:'var(--g600)',marginTop:4}}>{p.source}</div>}
+                  </td>
+                  <td>
+                    <div className="act-row">
+                      <button className="btn-edit" onClick={()=>setModal({p})}>Editar</button>
+                      <button className="btn-del2" onClick={()=>setDel(p)}>Excluir</button>
+                    </div>
+                  </td>
+                </tr>
+              ))}</tbody>
+            </table>
+          }
+        </div>
+      </div>
+      {modal&&<PModal product={modal.p} onSave={handleSave} onClose={()=>setModal(null)}/>}
+      {del&&<Confirm p={del} onOk={()=>{setProds(prev=>prev.filter(x=>x.id!==del.id));setDel(null);}} onCancel={()=>setDel(null)}/>}
+    </>
+  );
+}
+
+/* ══════════════════════════════════════
+   APP ROOT
+══════════════════════════════════════ */
+function App(){
+  const [user,setUser]=useState(()=>sessionStorage.getItem('lv_u')||'');
+  const [prods,setProds]=useState(()=>load('lv_ios_v8',INITIAL));
+  const [tab,setTab]=useState('catalogo');
+
+  useEffect(()=>{persist('lv_ios_v8',prods);},[prods]);
+  function login(u){sessionStorage.setItem('lv_u',u);setUser(u);}
+  function logout(){sessionStorage.removeItem('lv_u');setUser('');}
+
+  if(!user)return<Login onLogin={login}/>;
+
+  return(
+    <>
+      <header className="header">
+        <div className="hlogo"><img src={LOGO_URL} alt="Loveland Products"/></div>
+        <div className="hright">
+          <span className="huser">{user}</span>
+          <div className="hdiv"/>
+          <span className="hmeta">{prods.length} produtos</span>
+          <div className="hdiv"/>
+          <button className="btn-ghost" onClick={logout}>Sair</button>
+        </div>
+      </header>
+
+      <nav className="tab-bar">
+        <button className={`tab-btn${tab==='catalogo'?' active':''}`} onClick={()=>setTab('catalogo')}>
+          <I.Grid/> Catálogo
+        </button>
+        <button className={`tab-btn${tab==='plano'?' active':''}`} onClick={()=>setTab('plano')}>
+          <I.Chart/> Plano Nutricional
+        </button>
+        <button className={`tab-btn${tab==='admin'?' active':''}`} onClick={()=>setTab('admin')}>
+          <I.Settings/> Produtos
+        </button>
+      </nav>
+
+      <main className="main">
+        <div className={`tab-page${tab==='catalogo'?' active':''}`}><TabCatalogo prods={prods} setProds={setProds}/></div>
+        <div className={`tab-page${tab==='plano'?' active':''}`}>{tab==='plano'&&<TabPlano prods={prods}/>}</div>
+        <div className={`tab-page${tab==='admin'?' active':''}`}>{tab==='admin'&&<TabAdmin prods={prods} setProds={setProds}/>}</div>
+      </main>
+    </>
+  );
+}
+
+ReactDOM.render(<App/>,document.getElementById('root'));
+
+/* ── PWA Service Worker ── */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
